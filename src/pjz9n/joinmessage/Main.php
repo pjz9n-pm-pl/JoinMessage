@@ -23,9 +23,29 @@ declare(strict_types=1);
 
 namespace pjz9n\joinmessage;
 
+use pocketmine\event\EventPriority;
+use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\plugin\MethodEventExecutor;
 use pocketmine\plugin\PluginBase;
 
-class Main extends PluginBase
+class Main extends PluginBase implements Listener
 {
-    //
+    public function onEnable(): void
+    {
+        $this->getServer()->getPluginManager()->registerEvent(
+            PlayerJoinEvent::class,
+            $this,
+            EventPriority::NORMAL,
+            new MethodEventExecutor("sendJoinMessage"),
+            $this
+        );
+    }
+
+    public function sendJoinMessage(PlayerJoinEvent $event): void
+    {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        $player->sendMessage("こんにちは！" . $name . "さん");
+    }
 }
